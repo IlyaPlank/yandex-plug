@@ -1,0 +1,16 @@
+{
+  "name": "quasar-app-extension-music-yandex",
+  "version": "0.0.1",
+  "description": "A Quasar Project",
+  "author": "Ilya Plank <ilplank@yandex.ru>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "engines": {
+    "node": ">= 12.2.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  }
+}
