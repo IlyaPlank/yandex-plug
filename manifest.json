@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Yandex Music Spacebar Pause",
+  "version": "1.0.7",
+  "description": "Pause/play Yandex Music with Spacebar + custom UI tweaks",
+  "permissions": ["storage"],
+  "host_permissions": ["https://music.yandex.ru/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Yandex Music Settings"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://music.yandex.ru/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
