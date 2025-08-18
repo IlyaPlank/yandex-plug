@@ -4,31 +4,57 @@ function applySettings(settings) {
   if (body) body.style.maxWidth = settings.maxWidth ? '1920px' : '';
 
   // Скрыть анимацию волны
+  const canvas = document.querySelector('[class^="VibeAnimation_root"] canvas');
+  if (canvas) {
+    canvas.style.display = settings.hideAnimationWave ? 'none' : '';
+  }
 
-  const timerIntervalAnimationWave = setInterval(() => {
-    const canvas = document.querySelector(
-      '[class^="VibeAnimation_root"] canvas'
-    );
+  // Сдвинуть элементы предложки вниз
+  const vibeBlock = document.querySelector('[class^="VibeBlock_root"]');
+  if (vibeBlock) {
+    vibeBlock.style.minHeight = settings.cleanMainPage
+      ? 'calc(100vh - 135px)'
+      : '';
+  }
 
-    if (canvas) {
-      canvas.style.display = settings.hideAnimationWave ? 'none' : '';
-      clearInterval(timerIntervalAnimationWave);
-    }
-  }, 100);
+  const navbarDesktopAnimatedBar = document.querySelector(
+    '[class^="NavbarDesktopAnimatedBar_root"]'
+  );
 
-  setTimeout(() => {
-    clearInterval(timerIntervalAnimationWave);
-  }, 5000);
+  if (navbarDesktopAnimatedBar) {
+    navbarDesktopAnimatedBar.style.display = settings.hideInstallApp
+      ? 'none'
+      : '';
+  }
 }
 
-// Применяем настройки при загрузке
-chrome.storage.sync.get(['maxWidth', 'hideAnimationWave'], applySettings);
+function initSettingsObserver() {
+  // Загружаем настройки
+  chrome.storage.sync.get(
+    ['maxWidth', 'hideAnimationWave', 'cleanMainPage', 'hideInstallApp'],
+    (settings) => {
+      applySettings(settings);
 
-// Следим за изменением настроек
-chrome.storage.onChanged.addListener((changes, namespace) => {
-  if (namespace === 'sync') {
-    chrome.storage.sync.get(['maxWidth', 'hideAnimationWave'], applySettings);
-  }
+      // Создаем наблюдатель за изменениями DOM
+      const observer = new MutationObserver(() => applySettings(settings));
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+  );
+
+  // Следим за изменениями настроек
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'sync') {
+      chrome.storage.sync.get(
+        ['maxWidth', 'hideAnimationWave', 'cleanMainPage', 'hideInstallApp'],
+        applySettings
+      );
+    }
+  });
+}
+
+// Дожидаемся полной загрузки страницы
+window.addEventListener('load', () => {
+  initSettingsObserver();
 });
 
 // Управление музыкой пробелом
