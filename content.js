@@ -13,25 +13,54 @@ function applySettings(settings) {
   const vibeBlock = document.querySelector('[class^="VibeBlock_root"]');
   if (vibeBlock) {
     vibeBlock.style.minHeight = settings.cleanMainPage
-      ? 'calc(100vh - 135px)'
+      ? 'calc(100vh - 120px)'
       : '';
   }
 
+  // Скрыть блок с установкой приложения
   const navbarDesktopAnimatedBar = document.querySelector(
     '[class^="NavbarDesktopAnimatedBar_root"]'
   );
-
   if (navbarDesktopAnimatedBar) {
     navbarDesktopAnimatedBar.style.display = settings.hideInstallApp
       ? 'none'
       : '';
   }
+
+  // Обложка на фоне
+  const coverContainer = document.querySelector(
+    '[class^="PlayerBarDesktopWithBackgroundProgressBar_infoCard"] img'
+  );
+  if (coverContainer) {
+    const sources = parseSrcset(coverContainer.srcset);
+    const imageUrl = sources[0]?.url;
+		console.log('imageUrl', imageUrl) // TODO: Удалить
+		console.log('vibeBlock', vibeBlock) // TODO: Удалить
+		if (imageUrl && vibeBlock) {
+			const newUrl = imageUrl.replace(/\/[^/]+$/, "/400x400");
+			console.log('newUrl', newUrl) // TODO: Удалить
+			vibeBlock.style.setProperty("--custom-bg", `url("${imageUrl}")`);
+		}
+  }
+}
+
+function parseSrcset(srcset) {
+  return srcset.split(',').map((item) => {
+    const [url, size] = item.trim().split(/\s+/);
+    return { url, size };
+  });
 }
 
 function initSettingsObserver() {
   // Загружаем настройки
   chrome.storage.sync.get(
-    ['maxWidth', 'hideAnimationWave', 'cleanMainPage', 'hideInstallApp'],
+    [
+      'maxWidth',
+      'hideAnimationWave',
+      'cleanMainPage',
+      'hideInstallApp',
+      'backgroundImage',
+    ],
     (settings) => {
       applySettings(settings);
 
@@ -45,7 +74,13 @@ function initSettingsObserver() {
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'sync') {
       chrome.storage.sync.get(
-        ['maxWidth', 'hideAnimationWave', 'cleanMainPage', 'hideInstallApp'],
+        [
+          'maxWidth',
+          'hideAnimationWave',
+          'cleanMainPage',
+          'hideInstallApp',
+          'backgroundImage',
+        ],
         applySettings
       );
     }
