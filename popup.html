@@ -12,46 +12,53 @@
       </header>
 
       <div class="settings-list">
-        <div class="setting-group">
-          <label class="switch-item">
-            <span>Ограничить ширину</span>
-            <input type="checkbox" id="maxWidth" />
-            <span class="slider"></span>
-          </label>
+        <div class="settings-item">
+          <div class="setting-group">
+            <label class="switch-item">
+              <span>Ограничить ширину</span>
+              <input type="checkbox" id="maxWidth" />
+              <span class="slider"></span>
+            </label>
 
-          <div
-            id="widthInputContainer"
-            class="sub-setting"
-            style="display: none"
-          >
-            <input
-              type="number"
-              id="maxWidthValue"
-              value="1920"
-              min="800"
-              max="5000"
-            />
-            <span>пикселей (px)</span>
+            <div
+              id="widthInputContainer"
+              class="sub-setting"
+              style="display: none"
+            >
+              <input
+                type="number"
+                id="maxWidthValue"
+                value="1920"
+                min="800"
+                max="5000"
+              />
+              <span>пикселей (px)</span>
+            </div>
           </div>
         </div>
 
-        <label class="switch-item">
-          <span>Скрыть волну</span>
-          <input type="checkbox" id="hideAnimationWave" />
-          <span class="slider"></span>
-        </label>
-
-        <label class="switch-item">
-          <span>Чистая главная</span>
-          <input type="checkbox" id="cleanMainPage" />
-          <span class="slider"></span>
-        </label>
-
-        <label class="switch-item">
-          <span>Скрыть "Установить"</span>
-          <input type="checkbox" id="hideInstallApp" />
-          <span class="slider"></span>
-        </label>
+        <div class="settings-item">
+          <label class="switch-item">
+            <span>Скрыть волну</span>
+            <input type="checkbox" id="hideAnimationWave" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-item">
+          <label class="switch-item">
+            <span>Чистая главная</span>
+            <input type="checkbox" id="cleanMainPage" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-item">
+          <label class="switch-item">
+            <span>Скрыть "Установить приложение"</span>
+            <input type="checkbox" id="hideInstallApp" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <!-- <div class="settings-item"></div> -->
 
         <!-- <label class="switch-item">
           <span>Обложка на фоне</span>

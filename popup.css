@@ -29,13 +29,16 @@ h3 {
   font-size: 18px;
 }
 
+.settings-item {
+  border-bottom: 1px solid #27272a;
+}
+
 .switch-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 0; /* Немного увеличим для удобства */
   cursor: pointer;
-  border-bottom: 1px solid #27272a;
 }
 
 /* Стилизация чекбокса под Toggle */

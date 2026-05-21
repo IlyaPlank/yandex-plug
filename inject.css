@@ -7,7 +7,7 @@ html[data-ext-maxWidth] body {
   position: relative;
 }
 
-html[data-ext-hideAnimationWave] [class^='VibeAnimation_root'] canvas {
+html[data-ext-hideAnimationWave] [class^='VibeWidgetAnimation_root'] canvas {
   display: none !important;
 }
 
