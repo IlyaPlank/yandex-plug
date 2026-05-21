@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -6,27 +6,60 @@
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <h2>Настройки</h2>
-    <label> <input type="checkbox" id="maxWidth" /> Максимальная ширина </label
-    ><br />
-    <label>
-      <input type="checkbox" id="hideAnimationWave" />
-      Скрыть анимацию волны </label
-    ><br />
-    <label>
-      <input type="checkbox" id="cleanMainPage" /> Сдвинуть элементы предложки
-      вниз
-    </label>
-    <br />
-    <label>
-      <input type="checkbox" id="hideInstallApp" /> Скрыть блок с установкой
-      приложения
-    </label>
-    <br />
-    <label>
-      <input type="checkbox" id="backgroundImage" />
-      Обложка на фоне
-    </label>
+    <div class="container">
+      <header>
+        <h3>Music Tweaks</h3>
+      </header>
+
+      <div class="settings-list">
+        <div class="setting-group">
+          <label class="switch-item">
+            <span>Ограничить ширину</span>
+            <input type="checkbox" id="maxWidth" />
+            <span class="slider"></span>
+          </label>
+
+          <div
+            id="widthInputContainer"
+            class="sub-setting"
+            style="display: none"
+          >
+            <input
+              type="number"
+              id="maxWidthValue"
+              value="1920"
+              min="800"
+              max="5000"
+            />
+            <span>пикселей (px)</span>
+          </div>
+        </div>
+
+        <label class="switch-item">
+          <span>Скрыть волну</span>
+          <input type="checkbox" id="hideAnimationWave" />
+          <span class="slider"></span>
+        </label>
+
+        <label class="switch-item">
+          <span>Чистая главная</span>
+          <input type="checkbox" id="cleanMainPage" />
+          <span class="slider"></span>
+        </label>
+
+        <label class="switch-item">
+          <span>Скрыть "Установить"</span>
+          <input type="checkbox" id="hideInstallApp" />
+          <span class="slider"></span>
+        </label>
+
+        <!-- <label class="switch-item">
+          <span>Обложка на фоне</span>
+          <input type="checkbox" id="backgroundImage" />
+          <span class="slider"></span>
+        </label> -->
+      </div>
+    </div>
 
     <script src="popup.js"></script>
   </body>

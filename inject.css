@@ -1,0 +1,26 @@
+/* Если атрибут есть, применяем стили мгновенно */
+html[data-ext-maxWidth] body {
+  /* Используем переменную из JS, если она есть, иначе 1920px */
+  max-width: var(--ext-max-width-val, 1920px) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  position: relative;
+}
+
+html[data-ext-hideAnimationWave] [class^='VibeAnimation_root'] canvas {
+  display: none !important;
+}
+
+html[data-ext-cleanMainPage] [class^='VibeBlock_root'] {
+  min-height: calc(100vh - 110px) !important;
+}
+
+html[data-ext-hideInstallApp] [class^='NavbarDesktopAnimatedBar_root'] {
+  display: none !important;
+}
+
+/* Эффект размытия для фона, если включена обложка */
+html[data-ext-backgroundImage] [class^='VibeBlock_root'] {
+  transition: background-image 0.5s ease-in-out;
+  backdrop-filter: blur(20px);
+}

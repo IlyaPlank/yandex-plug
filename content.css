@@ -1,6 +1,0 @@
-/* Используем переменную --custom-bg */
-body {
-  background-image: var(--custom-bg, none) !important;
-  background-size: cover !important;
-  background-repeat: no-repeat !important;
-}

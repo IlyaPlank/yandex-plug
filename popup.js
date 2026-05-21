@@ -1,46 +1,108 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const maxWidth = document.getElementById('maxWidth');
-  const hideAnimationWave = document.getElementById('hideAnimationWave');
-  const cleanMainPage = document.getElementById('cleanMainPage');
-  const hideInstallApp = document.getElementById('hideInstallApp');
-  const backgroundImage = document.getElementById('backgroundImage');
+  // Собираем все нужные элементы один раз
+  const elements = {
+    maxWidth: document.getElementById('maxWidth'),
+    maxWidthValue: document.getElementById('maxWidthValue'),
+    widthInputContainer: document.getElementById('widthInputContainer'),
+    hideAnimationWave: document.getElementById('hideAnimationWave'),
+    cleanMainPage: document.getElementById('cleanMainPage'),
+    hideInstallApp: document.getElementById('hideInstallApp'),
+    backgroundImage: document.getElementById('backgroundImage'),
+  };
 
-  // Загружаем сохранённые настройки
-  chrome.storage.sync.get(
-    [
-      'maxWidth',
-      'hideAnimationWave',
-      'cleanMainPage',
-      'hideInstallApp',
-      'backgroundImage',
-    ],
-    (data) => {
-      maxWidth.checked = data.maxWidth || false;
-      hideAnimationWave.checked = data.hideAnimationWave || false;
-      cleanMainPage.checked = data.cleanMainPage || false;
-      hideInstallApp.checked = data.hideInstallApp || false;
-      hideInstallApp.checked = data.hideInstallApp || false;
-      backgroundImage.checked = data.backgroundImage || '';
+  // Функция сохранения настроек
+  const saveSettings = () => {
+    const settings = {};
+    // Автоматически собираем значения со всех чекбоксов из объекта elements
+    for (const [key, el] of Object.entries(elements)) {
+      if (!el) continue;
+      if (el.type === 'checkbox') {
+        settings[key] = el.checked;
+      } else if (el.type === 'number') {
+        settings[key] = parseInt(el.value) || 1920;
+      }
     }
-  );
+    chrome.storage.sync.set(settings);
+  };
 
-  // Сохраняем изменения
-  [
-    maxWidth,
-    hideAnimationWave,
-    cleanMainPage,
-    hideInstallApp,
-    backgroundImage,
-  ].forEach((el) => {
-    el.addEventListener('change', () => {
-      const settings = {
-        maxWidth: maxWidth.checked,
-        hideAnimationWave: hideAnimationWave.checked,
-        cleanMainPage: cleanMainPage.checked,
-        hideInstallApp: hideInstallApp.checked,
-        backgroundImage: backgroundImage.checked,
-      };
-      chrome.storage.sync.set(settings);
-    });
+  // Загрузка настроек
+  chrome.storage.sync.get(null, (data) => {
+    for (const [key, el] of Object.entries(elements)) {
+      if (!el) continue;
+      if (el.type === 'checkbox') {
+        el.checked = !!data[key];
+      } else if (el.type === 'number') {
+        el.value = data[key] || 1920;
+      }
+    }
+    // Отдельная логика для контейнера ширины
+    if (elements.widthInputContainer) {
+      elements.widthInputContainer.style.display = data.maxWidth
+        ? 'flex'
+        : 'none';
+    }
   });
+
+  // Навешиваем обработчики событий
+  for (const [key, el] of Object.entries(elements)) {
+    if (!el) continue;
+
+    const eventType = el.type === 'checkbox' ? 'change' : 'input';
+    el.addEventListener(eventType, () => {
+      // Если это главный переключатель ширины — показываем/скрываем поле ввода
+      if (key === 'maxWidth' && elements.widthInputContainer) {
+        elements.widthInputContainer.style.display = el.checked
+          ? 'flex'
+          : 'none';
+      }
+      saveSettings();
+    });
+  }
 });
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   const maxWidth = document.getElementById('maxWidth');
+//   const hideAnimationWave = document.getElementById('hideAnimationWave');
+//   const cleanMainPage = document.getElementById('cleanMainPage');
+//   const hideInstallApp = document.getElementById('hideInstallApp');
+//   const backgroundImage = document.getElementById('backgroundImage');
+
+//   // Загружаем сохранённые настройки
+//   chrome.storage.sync.get(
+//     [
+//       'maxWidth',
+//       'hideAnimationWave',
+//       'cleanMainPage',
+//       'hideInstallApp',
+//       'backgroundImage',
+//     ],
+//     (data) => {
+//       maxWidth.checked = data.maxWidth || false;
+//       hideAnimationWave.checked = data.hideAnimationWave || false;
+//       cleanMainPage.checked = data.cleanMainPage || false;
+//       hideInstallApp.checked = data.hideInstallApp || false;
+//       hideInstallApp.checked = data.hideInstallApp || false;
+//       backgroundImage.checked = data.backgroundImage || '';
+//     },
+//   );
+
+//   // Сохраняем изменения
+//   [
+//     maxWidth,
+//     hideAnimationWave,
+//     cleanMainPage,
+//     hideInstallApp,
+//     backgroundImage,
+//   ].forEach((el) => {
+//     el.addEventListener('change', () => {
+//       const settings = {
+//         maxWidth: maxWidth.checked,
+//         hideAnimationWave: hideAnimationWave.checked,
+//         cleanMainPage: cleanMainPage.checked,
+//         hideInstallApp: hideInstallApp.checked,
+//         backgroundImage: backgroundImage.checked,
+//       };
+//       chrome.storage.sync.set(settings);
+//     });
+//   });
+// });

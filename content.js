@@ -1,99 +1,80 @@
-function applySettings(settings) {
-  // Задать максимальную ширину для body
-  const body = document.querySelector('body');
-  if (body) body.style.maxWidth = settings.maxWidth ? '1920px' : '';
+// Функция для обновления атрибутов в DOM
+function updateDomMarkers(settings) {
+  const html = document.documentElement;
 
-  // Скрыть анимацию волны
-  const canvas = document.querySelector('[class^="VibeAnimation_root"] canvas');
-  if (canvas) {
-    canvas.style.display = settings.hideAnimationWave ? 'none' : '';
+  for (const [key, value] of Object.entries(settings)) {
+    if (key === 'maxWidthValue') {
+      // Устанавливаем CSS переменную
+      html.style.setProperty('--ext-max-width-val', `${value}px`);
+      continue;
+    }
+
+    if (value) {
+      html.setAttribute(`data-ext-${key}`, '');
+    } else {
+      html.removeAttribute(`data-ext-${key}`);
+    }
   }
+}
+// function updateDomMarkers(settings) {
+//   const html = document.documentElement;
+//   for (const [key, value] of Object.entries(settings)) {
+//     if (value) {
+//       html.setAttribute(`data-ext-${key}`, '');
+//     } else {
+//       html.removeAttribute(`data-ext-${key}`);
+//     }
+//   }
+//   // Отдельно вызываем функцию для тяжелого динамического контента
+//   applyDynamicStyles(settings);
+// }
 
-  // Сдвинуть элементы предложки вниз
-  const vibeBlock = document.querySelector('[class^="VibeBlock_root"]');
-  if (vibeBlock) {
-    vibeBlock.style.minHeight = settings.cleanMainPage
-      ? 'calc(100vh - 120px)'
-      : '';
-  }
+// Только для того, что нельзя решить чистым CSS
+function applyDynamicStyles(settings) {
+  if (settings.backgroundImage) {
+    const coverImg = document.querySelector(
+      '[class^="PlayerBarDesktopWithBackgroundProgressBar_infoCard"] img',
+    );
+    const vibeBlock = document.querySelector('[class^="VibeBlock_root"]');
 
-  // Скрыть блок с установкой приложения
-  const navbarDesktopAnimatedBar = document.querySelector(
-    '[class^="NavbarDesktopAnimatedBar_root"]'
-  );
-  if (navbarDesktopAnimatedBar) {
-    navbarDesktopAnimatedBar.style.display = settings.hideInstallApp
-      ? 'none'
-      : '';
-  }
-
-  // Обложка на фоне
-  const coverContainer = document.querySelector(
-    '[class^="PlayerBarDesktopWithBackgroundProgressBar_infoCard"] img'
-  );
-  if (coverContainer) {
-    const sources = parseSrcset(coverContainer.srcset);
-    const imageUrl = sources[0]?.url;
-		console.log('imageUrl', imageUrl) // TODO: Удалить
-		console.log('vibeBlock', vibeBlock) // TODO: Удалить
-		if (imageUrl && vibeBlock) {
-			const newUrl = imageUrl.replace(/\/[^/]+$/, "/400x400");
-			console.log('newUrl', newUrl) // TODO: Удалить
-			vibeBlock.style.setProperty("--custom-bg", `url("${imageUrl}")`);
-		}
+    if (coverImg && vibeBlock) {
+      const imageUrl = coverImg.src || parseSrcset(coverImg.srcset)[0]?.url;
+      if (imageUrl) {
+        const thumbUrl = imageUrl.replace(/(\/)\d+x\d+$/, '$1400x400');
+        vibeBlock.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("${thumbUrl}")`;
+        vibeBlock.style.backgroundSize = 'cover';
+        vibeBlock.style.backgroundPosition = 'center';
+      }
+    }
   }
 }
 
 function parseSrcset(srcset) {
+  if (!srcset) return [];
   return srcset.split(',').map((item) => {
     const [url, size] = item.trim().split(/\s+/);
     return { url, size };
   });
 }
 
-function initSettingsObserver() {
-  // Загружаем настройки
-  chrome.storage.sync.get(
-    [
-      'maxWidth',
-      'hideAnimationWave',
-      'cleanMainPage',
-      'hideInstallApp',
-      'backgroundImage',
-    ],
-    (settings) => {
-      applySettings(settings);
+// Инициализация
+chrome.storage.sync.get(null, (settings) => {
+  updateDomMarkers(settings);
 
-      // Создаем наблюдатель за изменениями DOM
-      const observer = new MutationObserver(() => applySettings(settings));
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
-  );
-
-  // Следим за изменениями настроек
-  chrome.storage.onChanged.addListener((changes, namespace) => {
-    if (namespace === 'sync') {
-      chrome.storage.sync.get(
-        [
-          'maxWidth',
-          'hideAnimationWave',
-          'cleanMainPage',
-          'hideInstallApp',
-          'backgroundImage',
-        ],
-        applySettings
-      );
-    }
-  });
-}
-
-// Дожидаемся полной загрузки страницы
-window.addEventListener('load', () => {
-  initSettingsObserver();
+  // Наблюдаем только за обложкой (динамика), а не за всем телом
+  const observer = new MutationObserver(() => applyDynamicStyles(settings));
+  observer.observe(document.body, { childList: true, subtree: true });
 });
 
-// Управление музыкой пробелом
-document.addEventListener('keydown', function (e) {
+// Слушаем изменения настроек "на лету"
+chrome.storage.onChanged.addListener((changes) => {
+  chrome.storage.sync.get(null, updateDomMarkers);
+});
+
+// Управление пробелом (улучшенный blur)
+document.addEventListener('keydown', (e) => {
+  if (e.code !== 'Space') return;
+
   const active = document.activeElement;
   if (
     active &&
@@ -104,17 +85,55 @@ document.addEventListener('keydown', function (e) {
     return;
   }
 
-  if (e.code === 'Space') {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (document.activeElement && document.activeElement !== document.body) {
-      document.activeElement.blur();
-    }
-
-    const btn = document.querySelector(
-      '[aria-labelledby="player-region"] [aria-label="Предыдущая песня"] + [aria-label="Воспроизведение"], [aria-labelledby="player-region"] [aria-label="Предыдущая песня"] + [aria-label="Пауза"]'
-    );
-
-    if (btn) btn.click();
+  if (document.activeElement && document.activeElement !== document.body) {
+    document.activeElement.blur();
   }
+
+  let btn = document.querySelector(
+    '[aria-labelledby="player-region"] [aria-label="Предыдущая песня"] + [aria-label="Воспроизведение"], [aria-labelledby="player-region"] [aria-label="Предыдущая песня"] + [aria-label="Пауза"]',
+  );
+
+  if (!btn) {
+    // Для "Моя волна"
+    btn = findMyWavePlayPauseButton();
+  }
+
+  if (btn) btn.click();
 });
+
+function findMyWavePlayPauseButton() {
+  const prevButton = document.querySelector(
+    'button[aria-label="Предыдущая песня"]',
+  );
+  const nextButton = document.querySelector(
+    'button[aria-label="Следующая песня"]',
+  );
+
+  if (!prevButton || !nextButton) return null;
+
+  // Находим общего родителя
+  let container = prevButton.parentElement;
+  while (container && !container.contains(nextButton)) {
+    container = container.parentElement;
+  }
+
+  if (!container) return null;
+
+  // Получаем все кнопки в контейнере в порядке их следования
+  const allButtons = [...container.querySelectorAll('button')];
+
+  const prevIndex = allButtons.indexOf(prevButton);
+  const nextIndex = allButtons.indexOf(nextButton);
+
+  // Ищем кнопку между ними
+  return allButtons.find((btn, index) => {
+    return (
+      index > prevIndex &&
+      index < nextIndex &&
+      btn !== prevButton &&
+      btn !== nextButton
+    );
+  });
+}
