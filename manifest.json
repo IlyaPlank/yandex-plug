@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Yandex fix",
+  "name": "Yandex plug",
   "version": "1.0.0",
   "description": "Custom UI tweaks",
   "permissions": ["storage"],
