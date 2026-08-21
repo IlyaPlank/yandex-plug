@@ -137,3 +137,52 @@ function findMyWavePlayPauseButton() {
     );
   });
 }
+
+// Копирование информации о треке по Ctrl + C
+document.addEventListener('keydown', async (e) => {
+  if (!e.ctrlKey || e.altKey || e.shiftKey || e.metaKey || e.code !== 'KeyC') {
+    return;
+  }
+
+  // Если что-то выделено — ничего не делаем
+  const selection = window.getSelection();
+  if (selection && selection.toString().trim().length > 0) {
+    return;
+  }
+
+  // Если пользователь работает с полем ввода — не мешаем обычной вставке
+  const active = document.activeElement;
+  if (
+    active &&
+    ((active.tagName === 'INPUT' && active.type !== 'range') ||
+      active.tagName === 'TEXTAREA' ||
+      active.isContentEditable)
+  ) {
+    return;
+  }
+
+  e.preventDefault();
+
+  const titleElement = document.querySelector(
+    '[class*="PlayerBarDesktopWithBackgroundProgressBar_description"] [class*="Meta_title"]',
+  );
+  const artistElement = document.querySelector(
+    '[class*="PlayerBarDesktopWithBackgroundProgressBar_description"] [class*="Meta_artistCaption"]',
+  );
+
+  const title = titleElement?.textContent?.trim() || '';
+  const artist = artistElement?.textContent?.trim() || '';
+
+  if (!title && !artist) {
+    return;
+  }
+
+  const text = `${artist} - ${title}`;
+
+  try {
+    await navigator.clipboard.writeText(text);
+    console.log('Скопировано:', text);
+  } catch (err) {
+    console.error('Не удалось скопировать:', err);
+  }
+});

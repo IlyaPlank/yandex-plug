@@ -11,11 +11,15 @@ html[data-ext-hideAnimationWave] [class^='VibeWidgetAnimation_root'] canvas {
   display: none !important;
 }
 
-html[data-ext-cleanMainPage] [class^='VibeBlock_root'] {
+/* html[data-ext-cleanMainPage] [class^='VibeBlock_root'] {
   min-height: calc(100vh - 110px) !important;
-}
+} */
 
 html[data-ext-hideInstallApp] [class^='NavbarDesktopAnimatedBar_root'] {
+  display: none !important;
+}
+
+html[data-ext-hideAI] [class^='VibePage_words__'] {
   display: none !important;
 }
 

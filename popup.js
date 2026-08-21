@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     hideAnimationWave: document.getElementById('hideAnimationWave'),
     cleanMainPage: document.getElementById('cleanMainPage'),
     hideInstallApp: document.getElementById('hideInstallApp'),
+    hideAI: document.getElementById('hideAI'),
     backgroundImage: document.getElementById('backgroundImage'),
   };
 
