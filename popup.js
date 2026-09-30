@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cleanMainPage: document.getElementById('cleanMainPage'),
     hideInstallApp: document.getElementById('hideInstallApp'),
     hideAI: document.getElementById('hideAI'),
+    hideMyWave: document.getElementById('hideMyWave'),
+    hideCarousel: document.getElementById('hideCarousel'),
     backgroundImage: document.getElementById('backgroundImage'),
   };
 

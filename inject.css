@@ -11,16 +11,28 @@ html[data-ext-hideAnimationWave] [class^='VibeWidgetAnimation_root'] canvas {
   display: none !important;
 }
 
-/* html[data-ext-cleanMainPage] [class^='VibeBlock_root'] {
-  min-height: calc(100vh - 110px) !important;
-} */
-
 html[data-ext-hideInstallApp] [class^='NavbarDesktopAnimatedBar_root'] {
   display: none !important;
 }
 
 html[data-ext-hideAI] [class^='VibePage_words__'] {
   display: none !important;
+}
+
+html[data-ext-hideAI] [class^='VibePage_playerBlock__'] {
+  flex: 0 0 10rem;
+}
+
+html[data-ext-hideMyWave] [title='Моя волна'] {
+  display: none !important;
+}
+
+html[data-ext-hideCarousel] section[aria-label='Рекомендации моей волны'] {
+  display: none !important;
+}
+
+html[data-ext-hideCarousel] [class^='VibePlayerBar_root__'] {
+  width: 100%;
 }
 
 /* Эффект размытия для фона, если включена обложка */
