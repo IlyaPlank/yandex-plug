@@ -21,7 +21,7 @@
 Скачайте репозиторий на компьютер:
 
 ```bash
-git clone https://github.com/USERNAME/REPOSITORY.git
+git clone https://github.com/IlyaPlank/yandex-plug.git
 ```
 
 Или нажмите:
@@ -173,7 +173,7 @@ chrome://extensions/
 Если вы хотите изменить код расширения, клонируйте репозиторий:
 
 ```bash
-git clone https://github.com/USERNAME/REPOSITORY.git
+git clone https://github.com/IlyaPlank/yandex-plug.git
 cd REPOSITORY
 ```
 
